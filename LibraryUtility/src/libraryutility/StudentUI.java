@@ -13,8 +13,7 @@ import javax.swing.JOptionPane;
  *
  * @author pc
  */
-public class StudentUI extends javax.swing.JFrame {
-
+public class StudentUI extends javax.swing.JFrame{
     /**
      * Creates new form StudentUI
      */
@@ -27,14 +26,13 @@ public class StudentUI extends javax.swing.JFrame {
         errLogout.setVisible(false);
         loginSuccess.setLocationRelativeTo(null);
         logoutSuccess.setLocationRelativeTo(null);
-        logoutFail.setLocationRelativeTo(null);
-        loginFail.setLocationRelativeTo(null);
-        loginFail1.setLocationRelativeTo(null);
+        lessHour.setLocationRelativeTo(null);
         setExtendedState(MAXIMIZED_BOTH);
+        
         try {
-            studTop.setModel(Access.getTop());
+            studTop.setModel(Access.getTop("10"));
         } catch (Exception ex) {
-            
+            System.out.println(ex);
         }
     }
  
@@ -51,23 +49,19 @@ public class StudentUI extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        okIn = new javax.swing.JButton();
+        nameIn = new javax.swing.JLabel();
         logoutSuccess = new javax.swing.JDialog();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        loginFail = new javax.swing.JDialog();
-        jLabel18 = new javax.swing.JLabel();
+        okOut = new javax.swing.JButton();
+        nameOut = new javax.swing.JLabel();
+        lessHour = new javax.swing.JDialog();
+        errLog = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
-        logoutFail = new javax.swing.JDialog();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jButton8 = new javax.swing.JButton();
-        loginFail1 = new javax.swing.JDialog();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jButton9 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jLabel18 = new javax.swing.JLabel();
         reminder = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         log = new javax.swing.JPanel();
@@ -99,8 +93,10 @@ public class StudentUI extends javax.swing.JFrame {
         backOut = new javax.swing.JButton();
         top = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
         studTop = new javax.swing.JTable();
+        jLabel20 = new javax.swing.JLabel();
+        num = new javax.swing.JComboBox<>();
 
         loginSuccess.setBackground(new java.awt.Color(153, 0, 102));
         loginSuccess.setBounds(new java.awt.Rectangle(0, 0, 593, 2));
@@ -117,19 +113,23 @@ public class StudentUI extends javax.swing.JFrame {
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Welcome to the library, (student name)");
+        jLabel14.setText("Welcome to the library,");
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel15.setText("Remember to log out before leaving the room");
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        jButton5.setText("OK");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        okIn.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        okIn.setText("OK");
+        okIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                okInActionPerformed(evt);
             }
         });
+
+        nameIn.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        nameIn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nameIn.setText("jLabel18");
 
         javax.swing.GroupLayout loginSuccessLayout = new javax.swing.GroupLayout(loginSuccess.getContentPane());
         loginSuccess.getContentPane().setLayout(loginSuccessLayout);
@@ -139,11 +139,12 @@ public class StudentUI extends javax.swing.JFrame {
                 .addGroup(loginSuccessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
+                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+                    .addComponent(nameIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(loginSuccessLayout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(244, 244, 244)
+                .addComponent(okIn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         loginSuccessLayout.setVerticalGroup(
@@ -153,11 +154,13 @@ public class StudentUI extends javax.swing.JFrame {
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel14)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nameIn)
+                .addGap(14, 14, 14)
                 .addComponent(jLabel15)
-                .addGap(26, 26, 26)
-                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                .addGap(34, 34, 34))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(okIn, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                .addGap(28, 28, 28))
         );
 
         logoutSuccess.setBackground(new java.awt.Color(153, 0, 102));
@@ -175,29 +178,34 @@ public class StudentUI extends javax.swing.JFrame {
 
         jLabel17.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setText("Thank you for visiting the library, (student name)");
+        jLabel17.setText("Thank you for visiting the library, ");
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        jButton6.setText("OK");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        okOut.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        okOut.setText("OK");
+        okOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                okOutActionPerformed(evt);
             }
         });
+
+        nameOut.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        nameOut.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nameOut.setText("jLabel18");
 
         javax.swing.GroupLayout logoutSuccessLayout = new javax.swing.GroupLayout(logoutSuccess.getContentPane());
         logoutSuccess.getContentPane().setLayout(logoutSuccessLayout);
         logoutSuccessLayout.setHorizontalGroup(
             logoutSuccessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(logoutSuccessLayout.createSequentialGroup()
+                .addGap(243, 243, 243)
+                .addComponent(okOut, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(logoutSuccessLayout.createSequentialGroup()
                 .addGroup(logoutSuccessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+                    .addComponent(nameOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(logoutSuccessLayout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         logoutSuccessLayout.setVerticalGroup(
             logoutSuccessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,162 +214,62 @@ public class StudentUI extends javax.swing.JFrame {
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel17)
-                .addGap(43, 43, 43)
-                .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nameOut)
+                .addGap(20, 20, 20)
+                .addComponent(okOut, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addGap(34, 34, 34))
         );
 
-        loginFail.setBackground(new java.awt.Color(153, 0, 102));
-        loginFail.setBounds(new java.awt.Rectangle(0, 0, 593, 2));
-        loginFail.setMinimumSize(new java.awt.Dimension(593, 280));
-        loginFail.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                loginFailWindowClosing(evt);
-            }
-        });
+        lessHour.setResizable(false);
+        lessHour.setSize(new java.awt.Dimension(578, 240));
 
-        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("Failed to log in");
+        errLog.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        errLog.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        errLog.setText("You haven't been in the library for an hour.");
 
-        jLabel19.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel19.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("Student not currently enrolled or does not have LSS.");
+        jLabel19.setText("Are you sure you want to log out?");
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        jButton7.setText("OK");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton3.setText("Yes");
 
-        javax.swing.GroupLayout loginFailLayout = new javax.swing.GroupLayout(loginFail.getContentPane());
-        loginFail.getContentPane().setLayout(loginFailLayout);
-        loginFailLayout.setHorizontalGroup(
-            loginFailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(loginFailLayout.createSequentialGroup()
-                .addGroup(loginFailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(loginFailLayout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton4.setText("No");
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel18.setText("<html><body>Hours rendered will be disregarded if <br><center>you choose to log out now.</center></body></html>");
+
+        javax.swing.GroupLayout lessHourLayout = new javax.swing.GroupLayout(lessHour.getContentPane());
+        lessHour.getContentPane().setLayout(lessHourLayout);
+        lessHourLayout.setHorizontalGroup(
+            lessHourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(errLog, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+            .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(lessHourLayout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55))
+            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING)
         );
-        loginFailLayout.setVerticalGroup(
-            loginFailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(loginFailLayout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jLabel18)
+        lessHourLayout.setVerticalGroup(
+            lessHourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lessHourLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(errLog)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel19)
-                .addGap(43, 43, 43)
-                .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                .addGap(34, 34, 34))
-        );
-
-        logoutFail.setBackground(new java.awt.Color(153, 0, 102));
-        logoutFail.setBounds(new java.awt.Rectangle(0, 0, 593, 2));
-        logoutFail.setMinimumSize(new java.awt.Dimension(593, 280));
-        logoutFail.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                logoutFailWindowClosing(evt);
-            }
-        });
-
-        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel20.setText("Failed to log out");
-
-        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel21.setText("You are not currently logged in.");
-
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        jButton8.setText("OK");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout logoutFailLayout = new javax.swing.GroupLayout(logoutFail.getContentPane());
-        logoutFail.getContentPane().setLayout(logoutFailLayout);
-        logoutFailLayout.setHorizontalGroup(
-            logoutFailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(logoutFailLayout.createSequentialGroup()
-                .addGroup(logoutFailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(logoutFailLayout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        logoutFailLayout.setVerticalGroup(
-            logoutFailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(logoutFailLayout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jLabel20)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel21)
-                .addGap(43, 43, 43)
-                .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                .addGap(34, 34, 34))
-        );
-
-        loginFail1.setBackground(new java.awt.Color(153, 0, 102));
-        loginFail1.setBounds(new java.awt.Rectangle(0, 0, 593, 2));
-        loginFail1.setMinimumSize(new java.awt.Dimension(593, 280));
-        loginFail1.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                loginFail1WindowClosing(evt);
-            }
-        });
-
-        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
-        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel22.setText("Failed to log in");
-
-        jLabel23.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel23.setText("Incorrect password");
-
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        jButton9.setText("OK");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout loginFail1Layout = new javax.swing.GroupLayout(loginFail1.getContentPane());
-        loginFail1.getContentPane().setLayout(loginFail1Layout);
-        loginFail1Layout.setHorizontalGroup(
-            loginFail1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(loginFail1Layout.createSequentialGroup()
-                .addGroup(loginFail1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(loginFail1Layout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        loginFail1Layout.setVerticalGroup(
-            loginFail1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(loginFail1Layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jLabel22)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel23)
-                .addGap(43, 43, 43)
-                .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                .addGap(34, 34, 34))
+                .addGap(18, 18, 18)
+                .addGroup(lessHourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -684,7 +592,7 @@ public class StudentUI extends javax.swing.JFrame {
         logLayout.setVerticalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(logLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(70, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
@@ -699,44 +607,60 @@ public class StudentUI extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Weekly Top 10 Students");
+        jLabel1.setText("Weekly Top Students");
 
         studTop.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "#", "Name", "# of Hours"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(studTop);
-        if (studTop.getColumnModel().getColumnCount() > 0) {
-            studTop.getColumnModel().getColumn(0).setHeaderValue("#");
-            studTop.getColumnModel().getColumn(1).setHeaderValue("Name");
-            studTop.getColumnModel().getColumn(2).setHeaderValue("# of Hours");
-        }
+        jScrollPane2.setViewportView(studTop);
+
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel20.setText("Show: ");
+
+        num.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        num.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Top 10", "Top 15", "Top 20", "All" }));
+        num.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                numActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout topLayout = new javax.swing.GroupLayout(top);
         top.setLayout(topLayout);
         topLayout.setHorizontalGroup(
             topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topLayout.createSequentialGroup()
+            .addGroup(topLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE))
+                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel20)
+                .addGap(18, 18, 18)
+                .addComponent(num, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(233, 233, 233))
         );
         topLayout.setVerticalGroup(
             topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topLayout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 885, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(num, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -777,11 +701,13 @@ public class StudentUI extends javax.swing.JFrame {
        logout.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void okInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okInActionPerformed
         loginSuccess.setVisible(false);
         login.setVisible(false);
         choice.setVisible(true);
-    }//GEN-LAST:event_jButton5ActionPerformed
+        loginU.setText("");
+        loginP.setText("");
+    }//GEN-LAST:event_okInActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         String user = loginU.getText();
@@ -791,6 +717,7 @@ public class StudentUI extends javax.swing.JFrame {
             if (pass.equals(s.getPassword()) && s.getStatus().equals("not active")) {
                 loginSuccess.setVisible(true);
                 incPass.setVisible(false);
+                nameIn.setText(s.getName());
                 Access.changeStatus(user, "active");
                 Access.addLog(user);
             } else if (!pass.equals(s.getPassword())) {
@@ -813,11 +740,13 @@ public class StudentUI extends javax.swing.JFrame {
         loginP.setText("");
     }//GEN-LAST:event_loginSuccessWindowClosing
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void okOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okOutActionPerformed
         logoutSuccess.setVisible(false);
         logout.setVisible(false);
         choice.setVisible(true);
-    }//GEN-LAST:event_jButton6ActionPerformed
+        logoutU.setText("");
+        logoutP.setText("");
+    }//GEN-LAST:event_okOutActionPerformed
 
     private void logoutSuccessWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_logoutSuccessWindowClosing
         logoutSuccess.setVisible(false);
@@ -833,10 +762,30 @@ public class StudentUI extends javax.swing.JFrame {
         try {
             Student s = Access.findStudentById(user);
             if (s.getStatus().equals("active") && pass.equals(s.getPassword())) {
-                errLogout.setVisible(false);
-                logoutSuccess.setVisible(true);
-                Access.changeStatus(user, "not active");
-                Access.setTimeOut(user);
+                if (Access.validate(user)) {
+                    if (Access.hasSched(user)) {
+                        if (Access.checkSched(user)) {
+                            errLogout.setVisible(false);
+                            logoutSuccess.setVisible(true);
+                            nameOut.setText(s.getName());
+                            Access.changeStatus(user, "not active");
+                            Access.setTimeOut(user);
+                            Access.addHours(user);
+                        } else {
+                            lessHour.setVisible(true);
+                            errLog.setText("You're logging out outside schedule.");
+                        }
+                    } else {
+                        errLogout.setVisible(false);
+                        logoutSuccess.setVisible(true);
+                        nameOut.setText(s.getName());
+                        Access.changeStatus(user, "not active");
+                        Access.setTimeOut(user);
+                        Access.addHours(user);
+                    }
+                } else {
+                    lessHour.setVisible(true);
+                } 
             } else if (!pass.equals(s.getPassword())){
                 errLogout.setVisible(true);
             } else {
@@ -848,30 +797,6 @@ public class StudentUI extends javax.swing.JFrame {
             errLogout.setVisible(true);
         } 
     }//GEN-LAST:event_logoutButtonActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        loginFail.setVisible(false);
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void loginFailWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginFailWindowClosing
-        // TODO add your handling code here:
-    }//GEN-LAST:event_loginFailWindowClosing
-
-    private void logoutFailWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_logoutFailWindowClosing
-        // TODO add your handling code here:
-    }//GEN-LAST:event_logoutFailWindowClosing
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        loginFail1.setVisible(false);
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void loginFail1WindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginFail1WindowClosing
-        // TODO add your handling code here:
-    }//GEN-LAST:event_loginFail1WindowClosing
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         login.setVisible(false);
@@ -886,6 +811,22 @@ public class StudentUI extends javax.swing.JFrame {
         logoutU.setText("");
         logoutP.setText("");
     }//GEN-LAST:event_backOutActionPerformed
+
+    private void numActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numActionPerformed
+        String limit = (String)num.getSelectedItem();
+        try {
+            if (limit.equals("Top 10")) {
+                studTop.setModel(Access.getTop("10"));
+            } else if (limit.equals("Top 15")) {
+                studTop.setModel(Access.getTop("15"));
+            } else if (limit.equals("Top 20")) {
+                studTop.setModel(Access.getTop("20"));
+            } else {
+                studTop.setModel(Access.getTop("All"));
+            }
+        } catch (Exception e) {}
+        
+    }//GEN-LAST:event_numActionPerformed
 
     /**
      * @param args the command line arguments
@@ -921,22 +862,20 @@ public class StudentUI extends javax.swing.JFrame {
             }
         });
         
-        Access.setCon(); // connect to database via DbData class
+        Access.setCon(); 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backOut;
     private javax.swing.JPanel choice;
+    private javax.swing.JLabel errLog;
     private javax.swing.JLabel errLogout;
     private javax.swing.JLabel incPass;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -950,9 +889,6 @@ public class StudentUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -961,21 +897,24 @@ public class StudentUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLayeredPane jLayeredPane1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JDialog lessHour;
     private javax.swing.JPanel log;
     private javax.swing.JPanel login;
     private javax.swing.JButton loginButton;
-    private javax.swing.JDialog loginFail;
-    private javax.swing.JDialog loginFail1;
     private javax.swing.JPasswordField loginP;
     private javax.swing.JDialog loginSuccess;
     private javax.swing.JTextField loginU;
     private javax.swing.JPanel logout;
     private javax.swing.JButton logoutButton;
-    private javax.swing.JDialog logoutFail;
     private javax.swing.JPasswordField logoutP;
     private javax.swing.JDialog logoutSuccess;
     private javax.swing.JTextField logoutU;
+    private javax.swing.JLabel nameIn;
+    private javax.swing.JLabel nameOut;
+    private javax.swing.JComboBox<String> num;
+    private javax.swing.JButton okIn;
+    private javax.swing.JButton okOut;
     private javax.swing.JPanel reminder;
     private javax.swing.JTable studTop;
     private javax.swing.JPanel top;

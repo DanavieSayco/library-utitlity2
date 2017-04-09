@@ -8,6 +8,7 @@ package libraryutility;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -61,7 +64,8 @@ public class Students implements Serializable {
     private String password;
     @Basic(optional = false)
     @Column(name = "hrsRendered")
-    private double hrsRendered;
+    @Temporal(TemporalType.TIME)
+    private Date hrsRendered;
     @Basic(optional = false)
     @Column(name = "status")
     private String status;
@@ -76,7 +80,7 @@ public class Students implements Serializable {
         this.studId = studId;
     }
 
-    public Students(String studId, String lastName, String firstName, String gender, String year, String password, double hrsRendered, String status, String enrolled) {
+    public Students(String studId, String lastName, String firstName, String gender, String year, String password, Date hrsRendered, String status, String enrolled) {
         this.studId = studId;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -148,12 +152,12 @@ public class Students implements Serializable {
         changeSupport.firePropertyChange("password", oldPassword, password);
     }
 
-    public double getHrsRendered() {
+    public Date getHrsRendered() {
         return hrsRendered;
     }
 
-    public void setHrsRendered(double hrsRendered) {
-        double oldHrsRendered = this.hrsRendered;
+    public void setHrsRendered(Date hrsRendered) {
+        Date oldHrsRendered = this.hrsRendered;
         this.hrsRendered = hrsRendered;
         changeSupport.firePropertyChange("hrsRendered", oldHrsRendered, hrsRendered);
     }

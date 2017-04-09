@@ -1,5 +1,7 @@
 package libraryutility;
 
+import java.sql.Time;
+
 /**
  *
  * @author pc
@@ -13,11 +15,11 @@ public class Student {
     String password;
     String enrolled;
     String status;
-    double hrs;
+    Time hrs;
     
     public Student() {
     }
-    public Student(String id, String lastName, String firstName, String gender, String year, String password, double hrs, String status) {
+    public Student(String id, String lastName, String firstName, String gender, String year, String password, Time hrs, String status) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.id = id;
@@ -54,7 +56,7 @@ public class Student {
     public String getStatus() {
         return this.status;
     }
-    public double getHrs() {
+    public Time getHrs() {
         return this.hrs;
     }
 }

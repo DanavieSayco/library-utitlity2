@@ -27,5 +27,7 @@ public class trial {
         } else {
             Student s = Access.findStudentByFirst(input);
         }
+        java.sql.Time timeIn = new java.sql.Time(new java.util.Date().getTime());
+        System.out.println(timeIn);
     }
 }
