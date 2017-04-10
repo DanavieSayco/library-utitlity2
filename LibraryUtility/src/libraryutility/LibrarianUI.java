@@ -1,6 +1,8 @@
 package libraryutility;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +35,10 @@ public class LibrarianUI extends javax.swing.JFrame {
         noStud.setVisible(false);
         other.setVisible(false);
         msg.setVisible(false);
-        lOutSel.setVisible(false);
         cancelLO.setVisible(false);
+        studInfo.setVisible(false);
+        actSel.setVisible(false);
+        datePicked.setDate(new Date());
         noSched.setLocationRelativeTo(null);
         exSuc.setLocationRelativeTo(null);
         outSuc.setLocationRelativeTo(null);
@@ -45,14 +49,24 @@ public class LibrarianUI extends javax.swing.JFrame {
         } else {
             tabs.addTab("View Report", viewReport);
         }
+        
         try {
+            Date dPicked = datePicked.getDate();
+            java.sql.Date sqlDate = new java.sql.Date(dPicked.getTime());
             online.setModel(Access.getOnline());
-            log.setModel(Access.getLog());
+            log.setModel(Access.getLog(sqlDate));
             studList.setModel(Access.getStudents("stud_id"));
             studSched.setModel(Access.getStudSched());
             report.setModel(Access.getWeekLog("prelim", "1st", "All"));
+            try {
+                if (Access.getNullOut().getRowCount() == 0) {
+                    logOutStud.setVisible(false);
+                } else {
+                    logOutStud.setVisible(true);
+                }
+        } catch (Exception e) {}
         } catch (Exception ex) {
-            
+            System.out.println(ex);
         }
     }
 
@@ -120,12 +134,25 @@ public class LibrarianUI extends javax.swing.JFrame {
         cancelEx = new javax.swing.JButton();
         studNotFound = new javax.swing.JLabel();
         viewLog = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        cancelLO = new javax.swing.JButton();
+        searchLog = new javax.swing.JTextField();
+        searchLogBtn = new javax.swing.JButton();
+        datePicked = new org.jdesktop.swingx.JXDatePicker();
+        jLabel22 = new javax.swing.JLabel();
+        studInfo = new javax.swing.JPanel();
+        studName = new javax.swing.JLabel();
+        studYear = new javax.swing.JLabel();
+        hrsWeek = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         log = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
-        logOutStud = new javax.swing.JButton();
-        cancelLO = new javax.swing.JButton();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        actSel = new javax.swing.JPanel();
+        appLogSel = new javax.swing.JButton();
         lOutSel = new javax.swing.JButton();
+        act = new javax.swing.JPanel();
+        appLog = new javax.swing.JButton();
+        logOutStud = new javax.swing.JButton();
         viewReport = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
@@ -409,27 +436,25 @@ public class LibrarianUI extends javax.swing.JFrame {
                         .addComponent(jScrollPane5)
                         .addContainerGap())
                     .addGroup(listOfStudentsLayout.createSequentialGroup()
-                        .addGroup(listOfStudentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchBoxL, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                        .addComponent(jLabel3)
+                        .addGap(199, 199, 199)
+                        .addComponent(noStud)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(listOfStudentsLayout.createSequentialGroup()
+                        .addComponent(searchBoxL, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(listOfStudentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(listOfStudentsLayout.createSequentialGroup()
-                                .addComponent(noStud)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(listOfStudentsLayout.createSequentialGroup()
-                                .addComponent(searchStudL)
-                                .addGap(18, 18, 18)
-                                .addComponent(clear)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(searchBy, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(sortBy, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(14, 14, 14))))))
+                        .addComponent(searchStudL)
+                        .addGap(18, 18, 18)
+                        .addComponent(clear)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(searchBy, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(sortBy, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))))
         );
         listOfStudentsLayout.setVerticalGroup(
             listOfStudentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -651,6 +676,82 @@ public class LibrarianUI extends javax.swing.JFrame {
 
         tabs.addTab("Excuse Student", excuseStudent);
 
+        viewLog.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                viewLogMouseClicked(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel7.setText("View Log");
+
+        cancelLO.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cancelLO.setText("Cancel");
+        cancelLO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelLOActionPerformed(evt);
+            }
+        });
+
+        searchLog.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        searchLogBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        searchLogBtn.setText("Search Student");
+        searchLogBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchLogBtnActionPerformed(evt);
+            }
+        });
+
+        datePicked.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                datePickedActionPerformed(evt);
+            }
+        });
+
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel22.setText("Select Date");
+
+        studInfo.setBackground(new java.awt.Color(255, 255, 255));
+        studInfo.setBorder(javax.swing.BorderFactory.createTitledBorder("Student"));
+
+        studName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        studName.setText("Name: ");
+
+        studYear.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        studYear.setText("Year: ");
+
+        hrsWeek.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        hrsWeek.setText("Hours Rendered for the Week: ");
+
+        javax.swing.GroupLayout studInfoLayout = new javax.swing.GroupLayout(studInfo);
+        studInfo.setLayout(studInfoLayout);
+        studInfoLayout.setHorizontalGroup(
+            studInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(studInfoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(studInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(studInfoLayout.createSequentialGroup()
+                        .addComponent(hrsWeek)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(studInfoLayout.createSequentialGroup()
+                        .addComponent(studName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(studYear)
+                        .addGap(217, 217, 217))))
+        );
+        studInfoLayout.setVerticalGroup(
+            studInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(studInfoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(studInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(studName)
+                    .addComponent(studYear))
+                .addGap(18, 18, 18)
+                .addComponent(hrsWeek)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         log.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -664,24 +765,8 @@ public class LibrarianUI extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(log);
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel7.setText("View Log");
-
-        logOutStud.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        logOutStud.setText("Log out Students");
-        logOutStud.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logOutStudActionPerformed(evt);
-            }
-        });
-
-        cancelLO.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cancelLO.setText("Cancel");
-        cancelLO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelLOActionPerformed(evt);
-            }
-        });
+        appLogSel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        appLogSel.setText("Approve Selected Logs");
 
         lOutSel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lOutSel.setText("Log Out Selected Students");
@@ -691,6 +776,84 @@ public class LibrarianUI extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout actSelLayout = new javax.swing.GroupLayout(actSel);
+        actSel.setLayout(actSelLayout);
+        actSelLayout.setHorizontalGroup(
+            actSelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, actSelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(appLogSel, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lOutSel)
+                .addContainerGap())
+        );
+        actSelLayout.setVerticalGroup(
+            actSelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actSelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(actSelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lOutSel)
+                    .addComponent(appLogSel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        appLog.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        appLog.setText("Approve Logs");
+        appLog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                appLogActionPerformed(evt);
+            }
+        });
+
+        logOutStud.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        logOutStud.setText("Log out Students");
+        logOutStud.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logOutStudActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout actLayout = new javax.swing.GroupLayout(act);
+        act.setLayout(actLayout);
+        actLayout.setHorizontalGroup(
+            actLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(appLog)
+                .addGap(18, 18, 18)
+                .addComponent(logOutStud)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        actLayout.setVerticalGroup(
+            actLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(actLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(logOutStud)
+                    .addComponent(appLog))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLayeredPane1.setLayer(actSel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(act, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(actSel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(act, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(actSel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(act, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout viewLogLayout = new javax.swing.GroupLayout(viewLog);
         viewLog.setLayout(viewLogLayout);
         viewLogLayout.setHorizontalGroup(
@@ -699,33 +862,47 @@ public class LibrarianUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(viewLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(viewLogLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1205, Short.MAX_VALUE)
-                        .addContainerGap())
+                        .addComponent(searchLog, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(searchLogBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 451, Short.MAX_VALUE)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(datePicked, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(studInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
                     .addGroup(viewLogLayout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(logOutStud)
-                        .addGap(46, 46, 46))
-                    .addGroup(viewLogLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, viewLogLayout.createSequentialGroup()
+                        .addGap(11, 11, 11)
                         .addComponent(cancelLO)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lOutSel)
-                        .addContainerGap())))
+                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         viewLogLayout.setVerticalGroup(
             viewLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(viewLogLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(viewLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(logOutStud))
+                    .addComponent(searchLog, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchLogBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22)
+                    .addComponent(datePicked, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(studInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 674, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addGroup(viewLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelLO)
-                    .addComponent(lOutSel))
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addGroup(viewLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(viewLogLayout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(cancelLO)))
+                .addGap(25, 25, 25))
         );
 
         tabs.addTab("View Log", viewLog);
@@ -1201,11 +1378,16 @@ public class LibrarianUI extends javax.swing.JFrame {
             Student s = Access.findStudentById(user);
             if(oldP.equals(s.getPassword())){
                 String nP = new String(nPass.getPassword());
-                Access.changePass(user, nP);
-                userN.setText("");
-                oPass.setText("");
-                nPass.setText("");
-                msg.setVisible(true);
+                if (!nP.equals(s.getPassword())) {
+                    Access.changePass(user, nP);
+                    userN.setText("");
+                    oPass.setText("");
+                    nPass.setText("");
+                    msg.setVisible(true);
+                } else {
+                    msg.setText("Your old password is the same as your new password.");
+                    msg.setVisible(true);
+                }
             }else if(!(oldP.equals(s.getPassword()))){
                 msg.setText("Incorrect Password. Please Try Again!");
                 msg.setVisible(true);
@@ -1310,8 +1492,56 @@ public class LibrarianUI extends javax.swing.JFrame {
             cancelLO.setVisible(false);
             lOutSel.setVisible(false);
             logOutStud.setVisible(true);
+            try {
+                if (Access.getNullOut().getRowCount() == 0) {
+                    logOutStud.setVisible(false);
+                } else {
+                    logOutStud.setVisible(true);
+                }
+        } catch (Exception e) {}
         } catch (Exception e) {}
     }//GEN-LAST:event_okSuc1ActionPerformed
+
+    private void viewLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewLogMouseClicked
+        
+    }//GEN-LAST:event_viewLogMouseClicked
+
+    private void appLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appLogActionPerformed
+        appLog.setVisible(false);
+        appLogSel.setVisible(true);
+        cancelLO.setVisible(true);
+        try {
+            log.setModel(Access.getLessLog());
+        } catch (Exception e) {}
+    }//GEN-LAST:event_appLogActionPerformed
+
+    private void searchLogBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchLogBtnActionPerformed
+        String user = searchLog.getText();
+        try {
+            Student s = Access.findStudentById(user);
+            studInfo.setVisible(true);
+            studName.setText("Name: " + s.getName());
+            studYear.setText("Year: " + s.getYear());
+            log.setModel(Access.getLog(user));
+        } catch (Exception e) {
+            
+        }
+    }//GEN-LAST:event_searchLogBtnActionPerformed
+
+    private void datePickedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_datePickedActionPerformed
+        Date dPicked = datePicked.getDate();
+        java.sql.Date sqlDate = new java.sql.Date(dPicked.getTime());
+        String user = searchLog.getText();
+        
+        try {
+            if (studInfo.isVisible()) {
+                log.setModel(Access.getLog(user, sqlDate));
+            } else {
+                log.setModel(Access.getLog(sqlDate));
+            }
+        } catch (Exception e) {}
+        
+    }//GEN-LAST:event_datePickedActionPerformed
     
     public void change() {
         try {
@@ -1370,17 +1600,23 @@ public class LibrarianUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel act;
+    private javax.swing.JPanel actSel;
+    private javax.swing.JButton appLog;
+    private javax.swing.JButton appLogSel;
     private javax.swing.JLayeredPane body;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JButton cancelEx;
     private javax.swing.JButton cancelLO;
     private javax.swing.JPanel changePassword;
     private javax.swing.JButton clear;
+    private org.jdesktop.swingx.JXDatePicker datePicked;
     private javax.persistence.EntityManager entityManager;
     private javax.swing.JDialog exSuc;
     private javax.swing.JPanel excuseStudent;
     private javax.swing.JComboBox<String> gen;
     private javax.swing.JPanel header;
+    private javax.swing.JLabel hrsWeek;
     private javax.swing.JLabel icon;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1396,6 +1632,7 @@ public class LibrarianUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1403,6 +1640,7 @@ public class LibrarianUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -1440,14 +1678,19 @@ public class LibrarianUI extends javax.swing.JFrame {
     private javax.swing.JTextField searchBoxL;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox<String> searchBy;
+    private javax.swing.JTextField searchLog;
+    private javax.swing.JButton searchLogBtn;
     private javax.swing.JButton searchStudL;
     private javax.swing.JLabel searchedStud;
     private javax.swing.JLabel searchedYr;
     private javax.swing.JComboBox<String> sortBy;
     private javax.swing.JPanel stat;
+    private javax.swing.JPanel studInfo;
     private javax.swing.JTable studList;
+    private javax.swing.JLabel studName;
     private javax.swing.JLabel studNotFound;
     private javax.swing.JTable studSched;
+    private javax.swing.JLabel studYear;
     private java.util.List<libraryutility.Students> studentsList;
     private javax.persistence.Query studentsQuery;
     private javax.swing.JButton submit;

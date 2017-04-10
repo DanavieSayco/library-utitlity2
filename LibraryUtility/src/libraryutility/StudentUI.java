@@ -24,6 +24,7 @@ public class StudentUI extends javax.swing.JFrame{
         logout.setVisible(false);
         incPass.setVisible(false);
         errLogout.setVisible(false);
+        lessHour.setModal(true);
         loginSuccess.setLocationRelativeTo(null);
         logoutSuccess.setLocationRelativeTo(null);
         lessHour.setLocationRelativeTo(null);
@@ -59,8 +60,8 @@ public class StudentUI extends javax.swing.JFrame{
         lessHour = new javax.swing.JDialog();
         errLog = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        yesLess = new javax.swing.JButton();
+        noLess = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         reminder = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -92,11 +93,12 @@ public class StudentUI extends javax.swing.JFrame{
         errLogout = new javax.swing.JLabel();
         backOut = new javax.swing.JButton();
         top = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         studTop = new javax.swing.JTable();
-        jLabel20 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         num = new javax.swing.JComboBox<>();
+        jLabel20 = new javax.swing.JLabel();
 
         loginSuccess.setBackground(new java.awt.Color(153, 0, 102));
         loginSuccess.setBounds(new java.awt.Rectangle(0, 0, 593, 2));
@@ -222,7 +224,7 @@ public class StudentUI extends javax.swing.JFrame{
         );
 
         lessHour.setResizable(false);
-        lessHour.setSize(new java.awt.Dimension(578, 240));
+        lessHour.setSize(new java.awt.Dimension(635, 265));
 
         errLog.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         errLog.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -232,27 +234,37 @@ public class StudentUI extends javax.swing.JFrame{
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel19.setText("Are you sure you want to log out?");
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton3.setText("Yes");
+        yesLess.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        yesLess.setText("Yes");
+        yesLess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yesLessActionPerformed(evt);
+            }
+        });
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton4.setText("No");
+        noLess.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        noLess.setText("No");
+        noLess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                noLessActionPerformed(evt);
+            }
+        });
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("<html><body>Hours rendered will be disregarded if <br><center>you choose to log out now.</center></body></html>");
+        jLabel18.setText("<html><body><center>Hours rendered will be disregarded if <br>you choose to log out now, <br>unless approved by the student assistant or librarian.</center></body></html>");
 
         javax.swing.GroupLayout lessHourLayout = new javax.swing.GroupLayout(lessHour.getContentPane());
         lessHour.getContentPane().setLayout(lessHourLayout);
         lessHourLayout.setHorizontalGroup(
             lessHourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(errLog, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+            .addComponent(errLog, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)
             .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(lessHourLayout.createSequentialGroup()
                 .addGap(57, 57, 57)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(yesLess, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(noLess, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55))
             .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING)
         );
@@ -265,15 +277,20 @@ public class StudentUI extends javax.swing.JFrame{
                 .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel19)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(lessHourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                    .addComponent(yesLess, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(noLess, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(0, 0, 1367, 737));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         reminder.setBackground(new java.awt.Color(0, 51, 153));
         reminder.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -342,7 +359,7 @@ public class StudentUI extends javax.swing.JFrame{
         choice.setLayout(choiceLayout);
         choiceLayout.setHorizontalGroup(
             choiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, choiceLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(choiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -359,7 +376,7 @@ public class StudentUI extends javax.swing.JFrame{
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         login.setBackground(new java.awt.Color(0, 52, 135));
@@ -427,7 +444,7 @@ public class StudentUI extends javax.swing.JFrame{
                             .addGroup(loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(loginU, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(incPass, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         loginLayout.setVerticalGroup(
             loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -450,7 +467,7 @@ public class StudentUI extends javax.swing.JFrame{
                 .addGap(0, 58, Short.MAX_VALUE))
         );
 
-        logout.setBackground(new java.awt.Color(0, 52, 153));
+        logout.setBackground(new java.awt.Color(0, 52, 135));
         login.setVisible(false);
 
         jLabel10.setBackground(new java.awt.Color(255, 255, 255));
@@ -509,13 +526,13 @@ public class StudentUI extends javax.swing.JFrame{
                             .addGroup(logoutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logoutLayout.createSequentialGroup()
                                     .addComponent(backOut, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                                     .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jLabel12)
                                 .addComponent(jLabel11)
                                 .addComponent(logoutU)
-                                .addComponent(logoutP, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(logoutP)))))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         logoutLayout.setVerticalGroup(
             logoutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -535,7 +552,7 @@ public class StudentUI extends javax.swing.JFrame{
                 .addGroup(logoutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(backOut)
                     .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         jLayeredPane1.setLayer(choice, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -546,29 +563,21 @@ public class StudentUI extends javax.swing.JFrame{
         jLayeredPane1.setLayout(jLayeredPane1Layout);
         jLayeredPane1Layout.setHorizontalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(choice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(choice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                    .addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 24, Short.MAX_VALUE)))
+                .addComponent(login, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(logout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(logout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jLayeredPane1Layout.setVerticalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(choice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(choice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jLayeredPane1Layout.createSequentialGroup()
                     .addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(logout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(logout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout logLayout = new javax.swing.GroupLayout(log);
@@ -605,10 +614,6 @@ public class StudentUI extends javax.swing.JFrame{
 
         top.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Weekly Top Students");
-
         studTop.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -622,8 +627,9 @@ public class StudentUI extends javax.swing.JFrame{
         ));
         jScrollPane2.setViewportView(studTop);
 
-        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel20.setText("Show: ");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Weekly Top Students");
 
         num.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         num.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Top 10", "Top 15", "Top 20", "All" }));
@@ -633,34 +639,53 @@ public class StudentUI extends javax.swing.JFrame{
             }
         });
 
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel20.setText("Show: ");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel20)
+                        .addGap(18, 18, 18)
+                        .addComponent(num, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(221, 221, 221)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(num, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout topLayout = new javax.swing.GroupLayout(top);
         top.setLayout(topLayout);
         topLayout.setHorizontalGroup(
             topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                .addComponent(jScrollPane2)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel20)
-                .addGap(18, 18, 18)
-                .addComponent(num, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(233, 233, 233))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         topLayout.setVerticalGroup(
             topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(num, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 854, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -703,10 +728,6 @@ public class StudentUI extends javax.swing.JFrame{
 
     private void okInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okInActionPerformed
         loginSuccess.setVisible(false);
-        login.setVisible(false);
-        choice.setVisible(true);
-        loginU.setText("");
-        loginP.setText("");
     }//GEN-LAST:event_okInActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
@@ -718,6 +739,10 @@ public class StudentUI extends javax.swing.JFrame{
                 loginSuccess.setVisible(true);
                 incPass.setVisible(false);
                 nameIn.setText(s.getName());
+                login.setVisible(false);
+                choice.setVisible(true);
+                loginU.setText("");
+                loginP.setText("");
                 Access.changeStatus(user, "active");
                 Access.addLog(user);
             } else if (!pass.equals(s.getPassword())) {
@@ -742,18 +767,10 @@ public class StudentUI extends javax.swing.JFrame{
 
     private void okOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okOutActionPerformed
         logoutSuccess.setVisible(false);
-        logout.setVisible(false);
-        choice.setVisible(true);
-        logoutU.setText("");
-        logoutP.setText("");
     }//GEN-LAST:event_okOutActionPerformed
 
     private void logoutSuccessWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_logoutSuccessWindowClosing
         logoutSuccess.setVisible(false);
-        logout.setVisible(false);
-        choice.setVisible(true);
-        logoutU.setText("");
-        logoutP.setText(""); 
     }//GEN-LAST:event_logoutSuccessWindowClosing
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
@@ -768,6 +785,10 @@ public class StudentUI extends javax.swing.JFrame{
                             errLogout.setVisible(false);
                             logoutSuccess.setVisible(true);
                             nameOut.setText(s.getName());
+                            logout.setVisible(false);
+                            choice.setVisible(true);
+                            logoutU.setText("");
+                            logoutP.setText("");
                             Access.changeStatus(user, "not active");
                             Access.setTimeOut(user);
                             Access.addHours(user);
@@ -779,11 +800,16 @@ public class StudentUI extends javax.swing.JFrame{
                         errLogout.setVisible(false);
                         logoutSuccess.setVisible(true);
                         nameOut.setText(s.getName());
+                        logout.setVisible(false);
+                        choice.setVisible(true);
+                        logoutU.setText("");
+                        logoutP.setText("");
                         Access.changeStatus(user, "not active");
                         Access.setTimeOut(user);
                         Access.addHours(user);
                     }
                 } else {
+                    errLog.setText("You haven't been in the library for an hour.");
                     lessHour.setVisible(true);
                 } 
             } else if (!pass.equals(s.getPassword())){
@@ -827,6 +853,34 @@ public class StudentUI extends javax.swing.JFrame{
         } catch (Exception e) {}
         
     }//GEN-LAST:event_numActionPerformed
+
+    private void yesLessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesLessActionPerformed
+        String user = logoutU.getText();
+        Student s = Access.findStudentById(user);
+        lessHour.setVisible(false);
+        errLogout.setVisible(false);
+        logoutSuccess.setVisible(true);
+        nameOut.setText(s.getName());
+        logout.setVisible(false);
+        choice.setVisible(true);
+        logoutU.setText("");
+        logoutP.setText("");
+        Access.changeStatus(user, "not active");
+        Access.setTimeOut(user);
+    }//GEN-LAST:event_yesLessActionPerformed
+
+    private void noLessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noLessActionPerformed
+        lessHour.setVisible(false);
+        logout.setVisible(false);
+        choice.setVisible(true);
+        logoutU.setText("");
+        logoutP.setText("");
+    }//GEN-LAST:event_noLessActionPerformed
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        logoutSuccess.setVisible(false);
+        loginSuccess.setVisible(false);
+    }//GEN-LAST:event_formMouseClicked
 
     /**
      * @param args the command line arguments
@@ -874,8 +928,6 @@ public class StudentUI extends javax.swing.JFrame{
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -897,6 +949,7 @@ public class StudentUI extends javax.swing.JFrame{
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JDialog lessHour;
     private javax.swing.JPanel log;
@@ -912,11 +965,13 @@ public class StudentUI extends javax.swing.JFrame{
     private javax.swing.JTextField logoutU;
     private javax.swing.JLabel nameIn;
     private javax.swing.JLabel nameOut;
+    private javax.swing.JButton noLess;
     private javax.swing.JComboBox<String> num;
     private javax.swing.JButton okIn;
     private javax.swing.JButton okOut;
     private javax.swing.JPanel reminder;
     private javax.swing.JTable studTop;
     private javax.swing.JPanel top;
+    private javax.swing.JButton yesLess;
     // End of variables declaration//GEN-END:variables
 }

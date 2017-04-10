@@ -36,21 +36,55 @@ public class Access {
         }     
     }
 
-    public static DefaultTableModel getStudents(String sort) throws Exception {
-        DefaultTableModel log = new DefaultTableModel(new Object[] {"ID", "Last Name", "First Name", "Year", "Gender", "Status", "Hrs Rendered"}, 0);
-        String sq;
-        if (sort.equals("HrsRendered")) {
-            sq = "SELECT * FROM students ORDER BY " + sort + " DESC";
-        } else {
-            sq = "SELECT * FROM students ORDER BY " + sort;
+    public static void addEx(String id, ArrayList<String> arr, String reason, String usr) throws Exception {
+        long time = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(time);
+        PreparedStatement ps;
+        for (int i = 0; i < arr.size(); i++) {
+            String st = "INSERT INTO excuse(excuse_id, date, stud_id, sched_id, reason, sa_id) VALUES (NULL, ?, ?, ?, ?, ?)";
+            ps = con.prepareStatement(st);
+            ps.setDate(1, date);
+            ps.setString(2, id);
+            ps.setInt(3, Integer.parseInt(arr.get(i)));
+            ps.setString(4, reason);
+            ps.setString(5, usr);
+            ps.execute();
+            st = "UPDATE students NATURAL JOIN schedule SET hrsRendered = ADDTIME(hrsRendered, timediff(endtime, starttime)) WHERE students.stud_id = ? and schedule.sched_id = ?";
+            ps = con.prepareStatement(st);
+            ps.setString(1, id);
+            ps.setInt(2, Integer.parseInt(arr.get(i)));
+            ps.execute();
+        } 
+    }
+    
+    public static void addHours(String id) {
+        PreparedStatement ps;
+        String st = "UPDATE students NATURAL JOIN log SET hrsRendered = ADDTIME(hrsRendered, hours) WHERE students.stud_id = ?";
+        try {
+            ps = con.prepareStatement(st);
+            ps.setString(1, id);
+            ps.execute();
+            ps.close();
+        } catch (Exception e) {
+            
         }
-        Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery(sq);
-        rs.beforeFirst();
-        while (rs.next()) {
-            log.addRow(new Object[] {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(5), rs.getString(4), rs.getString(8), rs.getTime(7)});
-        }
-        return log;
+    }
+    
+    public static void addLog(String id) {
+        long time = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(time);
+        java.sql.Time timeIn = new java.sql.Time(new java.util.Date().getTime());
+        PreparedStatement ps;
+        String st = "INSERT INTO log(log_id, date, time_in, stud_id) VALUES (NULL,?,?,?)";
+        try {
+            ps = con.prepareStatement(st);
+            ps.setDate(1, date);
+            ps.setTime(2, timeIn);
+            ps.setString(3, id);
+            ps.execute();
+            ps.close();
+        } catch (Exception e) {
+        } 
     }
     
     public static void addStudent(Student newS) {
@@ -69,17 +103,121 @@ public class Access {
         } catch (Exception e) { }
     }
     
-    public static void addHours(String id) {
+    public static void changePass(String id, String password) {
         PreparedStatement ps;
-        String st = "UPDATE students NATURAL JOIN log SET hrsRendered = ADDTIME(hrsRendered, hours) WHERE students.stud_id = ?";
+        String sq = "UPDATE students SET password = ? WHERE stud_id = ?";
         try {
-            ps = con.prepareStatement(st);
-            ps.setString(1, id);
+            ps = con.prepareStatement(sq);
+            ps.setString(1, password);
+            ps.setString(2, id);
+            ps.execute();
+            ps.close();
+        } catch (Exception e) { }
+    }
+    
+    public static void changeStatSA(String id, String status) {
+        PreparedStatement ps;
+        String sq = "UPDATE studassistant SET status = ? WHERE id = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, status);
+            ps.setString(2, id);
             ps.execute();
             ps.close();
         } catch (Exception e) {
-            
+            System.out.println("error");
         }
+    }
+    
+    public static void changeStatus(String id, String status) {
+        PreparedStatement ps;
+        String sq = "UPDATE students SET status = ? WHERE stud_id = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, status);
+            ps.setString(2, id);
+            ps.execute();
+            ps.close();
+        } catch (Exception e) { }
+    }
+    
+    public static boolean checkSched(String id) {
+        boolean result = false;
+        DayOfWeek today = DayOfWeek.from(LocalDate.now());
+        String tod = today.toString();
+        PreparedStatement ps;
+        String sq = "SELECT * FROM schedule WHERE stud_id = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                if (rs.getString(4).equalsIgnoreCase(tod)) {
+                    Time start = rs.getTime(2);
+                    Time end = rs.getTime(3);
+                    long startL = start.getTime();
+                    long endL = end.getTime();
+                    long now = System.currentTimeMillis();
+                    
+                    if (endL <= now) {
+                        result = true;
+                    } else {
+                        PreparedStatement pss;
+                        String sqq = "SELECT * FROM log WHERE stud_id = ? AND time_out IS NULL";
+                        pss = con.prepareStatement(sqq);
+                        pss.setString(1, id);
+                        ResultSet rss = ps.executeQuery();
+                        rss.beforeFirst();
+                        while (rss.next()) {
+                            Time in = rss.getTime(3);
+                            long inL = in.getTime();
+                            
+                            if (inL < startL && startL < now) {
+                                result = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {}
+        return result;
+    }
+    
+    public static LogIn findSA(String id) {
+        LogIn l = null;
+        PreparedStatement ps;
+        String sq = "SELECT * FROM studassistant WHERE id = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                l = new LogIn(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),rs.getString(5));
+            }
+            ps.close();
+        } catch (Exception e) { 
+            System.out.println("error here");
+        }
+        return l;
+    }
+    
+    public static DefaultTableModel findStudentByFirst(String firstName) {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"ID", "Last Name", "First Name", "Year", "Gender", "Status", "Hrs Rendered"}, 0);
+        PreparedStatement ps;
+        String sq = "SELECT * FROM students WHERE FirstName LIKE ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, "%" + firstName + "%");
+            ResultSet rs = ps.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                log.addRow(new Object[] {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(5), rs.getString(4), rs.getString(8), rs.getTime(7)});
+            }
+            ps.close();
+        } catch (Exception e) { }
+        return log;
     }
     
     public static Student findStudentById(String id) {
@@ -116,34 +254,91 @@ public class Access {
         return log;
     }
     
-    public static DefaultTableModel findStudentByFirst(String firstName) {
-        DefaultTableModel log = new DefaultTableModel(new Object[] {"ID", "Last Name", "First Name", "Year", "Gender", "Status", "Hrs Rendered"}, 0);
-        PreparedStatement ps;
-        String sq = "SELECT * FROM students WHERE FirstName LIKE ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, "%" + firstName + "%");
-            ResultSet rs = ps.executeQuery();
-            rs.beforeFirst();
-            while (rs.next()) {
-                log.addRow(new Object[] {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(5), rs.getString(4), rs.getString(8), rs.getTime(7)});
+    public static DefaultTableModel getLessLog() throws Exception {
+        DefaultTableModel log = new DefaultTableModel(null, new String[] {"Date","Last Name", "First Name", "Time In", "Time Out", "Action"}) {
+            public Class getColumnClass(int c) {
+                switch (c) {
+                    case 0: return String.class;
+                    case 1: return String.class;
+                    case 2: return String.class;
+                    case 3: return String.class;
+                    case 4: return String.class;
+                    default: return Boolean.class;
+                }
             }
-            ps.close();
-        } catch (Exception e) { }
+        };
+        String sq = "SELECT Date, LastName, FirstName, time_in, time_out FROM log NATURAL JOIN students WHERE timediff(time_out, time_in) < CAST('01:00:00' AS time)";
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(sq);
+        rs.beforeFirst();
+        while (rs.next()) {
+            log.addRow(new Object[] {rs.getDate(1).toString(), rs.getString(2), rs.getString(3), rs.getTime(4).toString(), rs.getTime(5).toString(), false});
+        }
         return log;
     }
     
-    public static DefaultListModel getOnline() throws Exception {
-        DefaultListModel lstudents = new DefaultListModel();
-        String sq = "SELECT * FROM students WHERE status = 'active' ORDER BY stud_id";
+    public static DefaultTableModel getLog() throws Exception {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"Date", "Last Name", "First Name", "Time In", "Time Out", "Hours"}, 0);
+        String sq = "SELECT Date, LastName, FirstName, time_in, time_out, Hours FROM log NATURAL JOIN students";
         Statement st = con.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_SENSITIVE);
         ResultSet rs = st.executeQuery(sq);
         rs.beforeFirst();
         while (rs.next()) {
-            String s = rs.getString(2) + ", " + rs.getString(3);
-            lstudents.addElement(s);
+            log.addRow(new Object[] {rs.getDate(1), rs.getString(2), rs.getString(3), rs.getTime(4), rs.getTime(5), rs.getTime(6)});
         }
-        return lstudents;
+        return log;
+    }
+    
+    public static DefaultTableModel getLog(String user) throws Exception {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"Date", "Time In", "Time Out", "Hours"}, 0);
+        PreparedStatement ps;
+        String sq = "SELECT Date, time_in, time_out, Hours FROM log NATURAL JOIN students WHERE stud_id = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, user);
+            ResultSet rs = ps.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                log.addRow(new Object[] {rs.getDate(1), rs.getTime(2), rs.getTime(3), rs.getTime(4)});
+            }
+        } catch (Exception e) {}
+        
+        return log;
+    }
+    
+    public static DefaultTableModel getLog(java.sql.Date date) throws Exception {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"Date", "Last Name", "First Name", "Time In", "Time Out", "Hours"}, 0);
+        PreparedStatement ps;
+        String sq = "SELECT Date, lastname, firstname, time_in, time_out, Hours FROM log NATURAL JOIN students WHERE date = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setDate(1, date);
+            ResultSet rs = ps.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                log.addRow(new Object[] {rs.getDate(1), rs.getString(2), rs.getString(3), rs.getTime(4), rs.getTime(5), rs.getTime(6)});
+            }
+        } catch (Exception e) {}
+        
+        return log;
+    }
+    
+    public static DefaultTableModel getLog(String user, java.sql.Date date) throws Exception {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"Date", "Time In", "Time Out", "Hours"}, 0);
+        PreparedStatement ps;
+        String sq = "SELECT Date, time_in, time_out, Hours FROM log NATURAL JOIN students WHERE stud_id = ? AND date = ?";
+        try {
+            ps = con.prepareStatement(sq);
+            ps.setString(1, user);
+            ps.setDate(2, date);
+            ResultSet rs = ps.executeQuery();
+            rs.beforeFirst();
+            while (rs.next()) {
+                log.addRow(new Object[] {rs.getDate(1), rs.getTime(2), rs.getTime(3), rs.getTime(4)});
+            }
+        } catch (Exception e) {}
+        
+        return log;
     }
     
     public static DefaultTableModel getNullOut() throws Exception {
@@ -168,47 +363,17 @@ public class Access {
         return log;
     }
     
-    public static DefaultTableModel getLog() throws Exception {
-        DefaultTableModel log = new DefaultTableModel(new Object[] {"Date", "Last Name", "First Name", "Time In", "Time Out", "Hours"}, 0);
-        String sq = "SELECT Date, LastName, FirstName, time_in, time_out, Hours FROM log NATURAL JOIN students";
+    public static DefaultListModel getOnline() throws Exception {
+        DefaultListModel lstudents = new DefaultListModel();
+        String sq = "SELECT * FROM students WHERE status = 'active' ORDER BY stud_id";
         Statement st = con.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_SENSITIVE);
         ResultSet rs = st.executeQuery(sq);
         rs.beforeFirst();
         while (rs.next()) {
-            log.addRow(new Object[] {rs.getDate(1), rs.getString(2), rs.getString(3), rs.getTime(4), rs.getTime(5), rs.getTime(6)});
+            String s = rs.getString(2) + ", " + rs.getString(3);
+            lstudents.addElement(s);
         }
-        return log;
-    }
-    
-    public static DefaultTableModel getTop(String limit) throws Exception {
-        int counter = 1;
-        String sq = "";
-        DefaultTableModel log = new DefaultTableModel(new Object[] {"#", "Last Name", "First Name", "Hours"}, 0);
-        if (limit.equals("All")) {
-            sq = "SELECT * FROM students ORDER BY hrsRendered DESC, lastname";
-        } else {
-            sq = "SELECT * FROM students ORDER BY hrsRendered DESC, lastname LIMIT " + limit;
-        }
-        Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery(sq);
-        rs.beforeFirst();
-        while (rs.next()) {
-            log.addRow(new Object[] {counter, rs.getString(2), rs.getString(3), rs.getTime(7)});
-            counter++;
-        }
-        return log;
-    }
-    
-    public static DefaultTableModel getStudSched() throws SQLException {
-        DefaultTableModel log = new DefaultTableModel(new Object[] {"Last Name", "First Name", "Status"}, 0);
-        String sq = "select lastname, firstname, starttime, endtime, status, day from students NATURAL JOIN schedule where day = dayname(curdate()) and starttime <= curtime() and endtime >= curtime()";
-        Statement st = con.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_SENSITIVE);
-        ResultSet rs = st.executeQuery(sq);
-        rs.beforeFirst();
-        while (rs.next()) {
-            log.addRow(new Object[] {rs.getString(1), rs.getString(2), rs.getString(5)});
-        }
-        return log;
+        return lstudents;
     }
     
     public static DefaultTableModel getSched(String id) throws Exception {
@@ -235,47 +400,52 @@ public class Access {
         return log;
     }
     
-    public static void changeStatus(String id, String status) {
-        PreparedStatement ps;
-        String sq = "UPDATE students SET status = ? WHERE stud_id = ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, status);
-            ps.setString(2, id);
-            ps.execute();
-            ps.close();
-        } catch (Exception e) { }
-    }
-    
-    public static void changeStatSA(String id, String status) {
-        PreparedStatement ps;
-        String sq = "UPDATE studassistant SET status = ? WHERE id = ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, status);
-            ps.setString(2, id);
-            ps.execute();
-            ps.close();
-        } catch (Exception e) {
-            System.out.println("error");
+    public static DefaultTableModel getStudents(String sort) throws Exception {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"ID", "Last Name", "First Name", "Year", "Gender", "Status", "Hrs Rendered"}, 0);
+        String sq;
+        if (sort.equals("HrsRendered")) {
+            sq = "SELECT * FROM students ORDER BY " + sort + " DESC";
+        } else {
+            sq = "SELECT * FROM students ORDER BY " + sort;
         }
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(sq);
+        rs.beforeFirst();
+        while (rs.next()) {
+            log.addRow(new Object[] {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(5), rs.getString(4), rs.getString(8), rs.getTime(7)});
+        }
+        return log;
     }
     
-    public static void addLog(String id) {
-        long time = System.currentTimeMillis();
-        java.sql.Date date = new java.sql.Date(time);
-        java.sql.Time timeIn = new java.sql.Time(new java.util.Date().getTime());
-        PreparedStatement ps;
-        String st = "INSERT INTO log(log_id, date, time_in, stud_id) VALUES (NULL,?,?,?)";
-        try {
-            ps = con.prepareStatement(st);
-            ps.setDate(1, date);
-            ps.setTime(2, timeIn);
-            ps.setString(3, id);
-            ps.execute();
-            ps.close();
-        } catch (Exception e) {
-        } 
+    public static DefaultTableModel getStudSched() throws SQLException {
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"Last Name", "First Name", "Status"}, 0);
+        String sq = "select lastname, firstname, starttime, endtime, status, day from students NATURAL JOIN schedule where day = dayname(curdate()) and starttime <= curtime() and endtime >= curtime()";
+        Statement st = con.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_SENSITIVE);
+        ResultSet rs = st.executeQuery(sq);
+        rs.beforeFirst();
+        while (rs.next()) {
+            log.addRow(new Object[] {rs.getString(1), rs.getString(2), rs.getString(5)});
+        }
+        return log;
+    }
+    
+    public static DefaultTableModel getTop(String limit) throws Exception {
+        int counter = 1;
+        String sq = "";
+        DefaultTableModel log = new DefaultTableModel(new Object[] {"#", "Last Name", "First Name", "Hours"}, 0);
+        if (limit.equals("All")) {
+            sq = "SELECT * FROM students ORDER BY hrsRendered DESC, lastname";
+        } else {
+            sq = "SELECT * FROM students ORDER BY hrsRendered DESC, lastname LIMIT " + limit;
+        }
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(sq);
+        rs.beforeFirst();
+        while (rs.next()) {
+            log.addRow(new Object[] {counter, rs.getString(2), rs.getString(3), rs.getTime(7)});
+            counter++;
+        }
+        return log;
     }
     
     public static DefaultTableModel getWeekLog(String term, String year, String gender) {
@@ -305,25 +475,32 @@ public class Access {
         return log;
     }
     
-    public static void addEx(String id, ArrayList<String> arr, String reason, String usr) throws Exception {
-        long time = System.currentTimeMillis();
-        java.sql.Date date = new java.sql.Date(time);
+    public static boolean hasSched(String id) {
+        boolean result = false;
         PreparedStatement ps;
-        for (int i = 0; i < arr.size(); i++) {
-            String st = "INSERT INTO excuse(excuse_id, date, stud_id, sched_id, reason, sa_id) VALUES (NULL, ?, ?, ?, ?, ?)";
-            ps = con.prepareStatement(st);
-            ps.setDate(1, date);
-            ps.setString(2, id);
-            ps.setInt(3, Integer.parseInt(arr.get(i)));
-            ps.setString(4, reason);
-            ps.setString(5, usr);
-            ps.execute();
-            st = "UPDATE students NATURAL JOIN schedule SET hrsRendered = ADDTIME(hrsRendered, timediff(endtime, starttime)) WHERE students.stud_id = ? and schedule.sched_id = ?";
-            ps = con.prepareStatement(st);
+        String sq = "SELECT * FROM schedule WHERE stud_id = ?";
+        try {
+            ps = con.prepareStatement(sq);
             ps.setString(1, id);
-            ps.setInt(2, Integer.parseInt(arr.get(i)));
-            ps.execute();
-        } 
+            result = true;
+        } catch (Exception e) {
+            result = false;
+        }
+        return result;
+    }
+    
+    public static LogIn searchSA() {
+        LogIn l = null;
+        String sq = "SELECT * FROM studassistant WHERE status = 'active'";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sq);
+            rs.beforeFirst();
+            while (rs.next()) {
+                l = new LogIn(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),rs.getString(5));
+            }
+        } catch (Exception e) { }
+        return l;        
     }
     
     public static void setTimeOut(String id) {
@@ -371,118 +548,25 @@ public class Access {
     
     public static boolean validate(String id) {
         boolean result  = false;
+        int counter = 0;
+        //long now = System.currentTimeMillis();
         PreparedStatement ps;
         String sq = "SELECT TIMEDIFF(CURTIME(), time_in) FROM log NATURAL JOIN students WHERE stud_id = ? AND time_out IS NULL AND TIMEDIFF(CURTIME(), time_in) >= CAST('01:00:00' AS time)";
+        //String sq = "SELECT time_in FROM log WHERE stud_id = ? AND time_out IS NULL";
         try {
             ps = con.prepareStatement(sq);
             ps.setString(1, id);
-            result = true;
-        } catch (Exception e) {
-            System.out.println("Error" + e);
-            result = false;
-        }
-        return result;
-    }
-    
-    public static boolean checkSched(String id) {
-        boolean result = false;
-        DayOfWeek today = DayOfWeek.from(LocalDate.now());
-        String tod = today.toString();
-        PreparedStatement ps;
-        String sq = "SELECT * FROM schedule WHERE stud_id = ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, id);
+            //result = true;
             ResultSet rs = ps.executeQuery();
             rs.beforeFirst();
             while (rs.next()) {
-                if (rs.getString(4).equalsIgnoreCase(tod)) {
-                    Time start = rs.getTime(2);
-                    Time end = rs.getTime(3);
-                    long startL = start.getTime();
-                    long endL = end.getTime();
-                    long now = System.currentTimeMillis();
-                    
-                    if (endL <= now) {
-                        result = true;
-                    } else {
-                        PreparedStatement pss;
-                        String sqq = "SELECT * FROM log WHERE stud_id = ? AND time_out IS NULL";
-                        pss = con.prepareStatement(sqq);
-                        pss.setString(1, id);
-                        ResultSet rss = ps.executeQuery();
-                        rss.beforeFirst();
-                        while (rss.next()) {
-                            Time in = rss.getTime(3);
-                            long inL = in.getTime();
-                            
-                            if (inL < startL && startL < now) {
-                                result = true;
-                            }
-                        }
-                    }
-                }
+                //Time db = rs.getTime(1);
+                //long dbt = db.getTime();
+                counter++;
             }
-        } catch (Exception e) {}
-        return result;
-    }
-    
-    public static boolean hasSched(String id) {
-        boolean result = false;
-        PreparedStatement ps;
-        String sq = "SELECT * FROM schedule WHERE stud_id = ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, id);
-            result = true;
         } catch (Exception e) {
             result = false;
         }
         return result;
-    }
-    
-    public static LogIn findSA(String id) {
-        LogIn l = null;
-        PreparedStatement ps;
-        String sq = "SELECT * FROM studassistant WHERE id = ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, id);
-            ResultSet rs = ps.executeQuery();
-            rs.beforeFirst();
-            while (rs.next()) {
-                l = new LogIn(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),rs.getString(5));
-            }
-            ps.close();
-        } catch (Exception e) { 
-            System.out.println("error here");
-        }
-        return l;
-    }
-    
-    public static LogIn searchSA() {
-        LogIn l = null;
-        String sq = "SELECT * FROM studassistant WHERE status = 'active'";
-        try {
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sq);
-            rs.beforeFirst();
-            while (rs.next()) {
-                l = new LogIn(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),rs.getString(5));
-            }
-        } catch (Exception e) { }
-        return l;        
-    }
-    
-    public static void changePass(String id, String password) {
-        PreparedStatement ps;
-        String sq = "UPDATE students SET password = ? WHERE stud_id = ?";
-        try {
-            ps = con.prepareStatement(sq);
-            ps.setString(1, password);
-            ps.setString(2, id);
-            ps.execute();
-            ps.close();
-        } catch (Exception e) { }
     }
 }
